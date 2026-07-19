@@ -1,6 +1,6 @@
 # Feature stage tracker: add-application-url-property
 
-- [ ] spec
+- [x] spec
 - [ ] plan
 - [ ] build
 - [ ] review
