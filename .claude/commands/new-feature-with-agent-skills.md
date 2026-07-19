@@ -47,6 +47,8 @@ Invoke `/spec` (spec-driven-development). Feed it the feature description (or, o
 - If `docs/spec.md` already exists (from a prior feature run in this repo's history), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch.
 - Every write to `docs/spec.md` — including the very first one ever — gets a matching entry in `docs/changes/yyyy-mm-dd-<slug>.md` describing what changed and why.
 - Get explicit human approval of the spec content itself (this is part of the skill's own flow) before checking off this stage.
+- **Before moving to stage 3, commit `docs/spec.md` and its `docs/changes/*.md` entry.** `/build auto`'s own clean-baseline check (`git status --porcelain`) does not whitelist `docs/changes/*`, so an uncommitted changelog file would make it stop and ask. Committing here also satisfies `/build auto`'s requirement that planning artifacts not bleed into the first task's commit.
+- **Note for stage 3:** `/build auto` looks only for a spec at `SPEC.md`, `docs/SPEC.md`, or `spec/*` (case-sensitive) — it will not recognize `docs/spec.md` on its own. When invoking `/build auto`, explicitly tell it that `docs/spec.md` (committed in this stage) satisfies its spec requirement, so it doesn't stop looking for one.
 
 ### 2. Plan
 Invoke `/plan` (planning-and-task-breakdown) against the approved `docs/spec.md`. Produces `tasks/plan.md` and `tasks/todo.md` as usual.
