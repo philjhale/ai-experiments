@@ -43,9 +43,9 @@
     <div class="mb-3">
         <label for="locationType" class="form-label">Location Type</label>
         <InputSelect id="locationType" class="form-select" @bind-Value="job.LocationType">
-            @foreach (var remoteType in Enum.GetValues<RemoteType>())
+            @foreach (var locationType in Enum.GetValues<RemoteType>())
             {
-                <option value="@remoteType">@remoteType</option>
+                <option value="@locationType">@locationType</option>
             }
         </InputSelect>
     </div>
