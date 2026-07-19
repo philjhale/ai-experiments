@@ -1,0 +1,97 @@
+@page "/post"
+@inject JobService JobService
+@inject NavigationManager NavigationManager
+
+<PageTitle>Post a Job</PageTitle>
+
+<h1>Post a Job</h1>
+
+<EditForm Model="@job" FormName="PostJob" OnValidSubmit="HandleValidSubmit" method="post">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <InputText id="title" class="form-control" @bind-Value="job.Title" />
+    </div>
+
+    <div class="mb-3">
+        <label for="company" class="form-label">Company</label>
+        <InputText id="company" class="form-control" @bind-Value="job.Company" />
+    </div>
+
+    <div class="mb-3">
+        <label for="location" class="form-label">Location</label>
+        <InputText id="location" class="form-control" @bind-Value="job.Location" />
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <InputTextArea id="description" class="form-control" @bind-Value="job.Description" />
+    </div>
+
+    <div class="mb-3">
+        <label for="jobType" class="form-label">Job Type</label>
+        <InputSelect id="jobType" class="form-select" @bind-Value="job.JobType">
+            @foreach (var type in Enum.GetValues<JobType>())
+            {
+                <option value="@type">@type</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div class="mb-3">
+        <label for="remote" class="form-label">Remote</label>
+        <InputSelect id="remote" class="form-select" @bind-Value="job.Remote">
+            @foreach (var remoteType in Enum.GetValues<RemoteType>())
+            {
+                <option value="@remoteType">@remoteType</option>
+            }
+        </InputSelect>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Post Job</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private JobInput job { get; set; } = null!;
+
+    protected override void OnInitialized()
+    {
+        job ??= new JobInput();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await JobService.AddJobAsync(new Job
+        {
+            Title = job.Title,
+            Company = job.Company,
+            Location = job.Location,
+            Description = job.Description,
+            JobType = job.JobType,
+            Remote = job.Remote,
+        });
+        NavigationManager.NavigateTo("/");
+    }
+
+    public class JobInput
+    {
+        [Required]
+        public string Title { get; set; } = "";
+
+        [Required]
+        public string Company { get; set; } = "";
+
+        [Required]
+        public string Location { get; set; } = "";
+
+        [Required]
+        public string Description { get; set; } = "";
+
+        public JobType JobType { get; set; }
+
+        public RemoteType Remote { get; set; }
+    }
+}
