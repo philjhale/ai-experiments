@@ -10,8 +10,10 @@ Arguments: `$ARGUMENTS`
 
 ## Resuming vs. starting new
 
-1. Run `git status`. If the current directory is inside a feature worktree created by this command (i.e. `tasks/feature-stage.md` exists somewhere up the tree), this is a **resume**, regardless of whether arguments were passed:
+1. Run `git status`. If the current directory is inside a feature worktree created by this command (i.e. `tasks/feature-stage.md` exists somewhere up the tree), this is a **resume**:
    - Read `tasks/feature-stage.md` to find the last completed stage.
+   - If every stage is already checked off, tell the human this feature is already shipped and stop — do not re-invoke any stage.
+   - Otherwise, if arguments were also passed, don't discard them silently: tell the human this worktree has an in-progress feature at stage X and that you're resuming it instead of starting the new description they gave — they can say so if they meant to start fresh elsewhere.
    - Announce which stage is next and continue from there (go to the matching step below).
 2. Otherwise this is a **new feature** and arguments (the feature description) are required. If none were given, ask for one and stop.
    - Derive a kebab-case slug from the description (e.g. "add dark mode toggle" -> `add-dark-mode-toggle`). Reuse this slug for the branch name, worktree directory, and `docs/changes/` filenames.
@@ -30,7 +32,7 @@ Arguments: `$ARGUMENTS`
 ## Stage gate pattern
 
 After **every** stage below:
-1. Update `tasks/feature-stage.md`, checking off the completed stage, and commit it with `git add -f tasks/feature-stage.md`.
+1. Update `tasks/feature-stage.md`, checking off the completed stage, and commit it.
 2. Present a concise summary of what the stage produced.
 3. Offer both continuation paths and let the human pick in the moment:
    - **Continue now**: use AskUserQuestion with options approve / revise / stop. On approve, proceed immediately to the next stage in this same turn.
