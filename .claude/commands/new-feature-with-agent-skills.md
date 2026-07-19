@@ -42,12 +42,12 @@ After **every** stage below:
 ## Stages
 
 ### 1. Spec
-Invoke `/agent-skills:spec` (spec-driven-development). Feed it the feature description (or, on resume, whatever context is needed to pick the conversation back up).
+Invoke `/agent-skills:spec` (spec-driven-development). Feed it the feature description (or, on resume, whatever context is needed to pick the conversation back up). A brand-new spec is written to `docs/SPEC.md`.
 
-- Before assuming this is the first spec ever, search the whole repo for existing `SPEC.md` files — not just the root (e.g. `find . -iname SPEC.md`). If exactly one exists (root or a subproject), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch, and never create a second, disconnected `SPEC.md` elsewhere. If the search finds **more than one** `SPEC.md` (e.g. a monorepo with several subproject specs), confirm with the human which one this feature belongs to before writing, regardless of whether one of them happens to be at root.
-- Every write to `SPEC.md` — including the very first one ever — gets a matching entry in `docs/changes/yyyy-mm-dd-<slug>.md` describing what changed and why.
+- Before assuming this is the first spec ever, search the whole repo for existing specs — not just the root (e.g. `find . -iname SPEC.md`). If exactly one exists (root or a subproject), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch, and never create a second, disconnected spec elsewhere. If the search finds **more than one** spec (e.g. a monorepo with several subproject specs), confirm with the human which one this feature belongs to before writing, regardless of whether one of them happens to be at root.
+- Every write to the spec — including the very first one ever — gets a matching entry in `docs/changes/yyyy-mm-dd-<slug>.md` describing what changed and why.
 - Get explicit human approval of the spec content itself (this is part of the skill's own flow) before checking off this stage.
-- **Before moving to stage 3, commit `SPEC.md` and its `docs/changes/*.md` entry.** `/build auto`'s own clean-baseline check (`git status --porcelain`) does not whitelist `docs/changes/*`, so an uncommitted changelog file would make it stop and ask. Committing here also satisfies `/build auto`'s requirement that planning artifacts not bleed into the first task's commit.
+- **Before moving to stage 3, commit the spec and its `docs/changes/*.md` entry.** `/build auto`'s own clean-baseline check (`git status --porcelain`) does not whitelist `docs/changes/*`, so an uncommitted changelog file would make it stop and ask. Committing here also satisfies `/build auto`'s requirement that planning artifacts not bleed into the first task's commit.
 
 ### 2. Plan
 Invoke `/agent-skills:plan`.
