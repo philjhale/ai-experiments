@@ -1,7 +1,44 @@
-﻿@page "/"
+@page "/"
+@inject JobService JobService
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Job Board</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Job Board</h1>
 
-Welcome to your new app.
+<a class="btn btn-primary mb-3" href="/post">Post a Job</a>
+
+@if (jobs is null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (jobs.Count == 0)
+{
+    <p>No jobs posted yet. Be the first!</p>
+}
+else
+{
+    @foreach (var job in jobs)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">@job.Title</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@job.Company &middot; @job.Location</h6>
+                <p class="card-text">
+                    <span class="badge bg-secondary">@job.JobType</span>
+                    <span class="badge bg-secondary">@job.Remote</span>
+                </p>
+                <p class="card-text">@job.Description</p>
+                <p class="card-text"><small class="text-muted">Posted @job.PostedDate.ToLocalTime().ToString("g")</small></p>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private List<Job>? jobs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        jobs = await JobService.GetAllJobsAsync();
+    }
+}
