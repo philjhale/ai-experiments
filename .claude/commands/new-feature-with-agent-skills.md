@@ -26,13 +26,11 @@ Arguments: `$ARGUMENTS`
      - [ ] review
      - [ ] ship (+ PR)
      ```
-   - This repo's `.gitignore` has a bare `tasks/` entry, so this tracker is untracked by default and would not survive a `git clean` or a lost worktree. Force-add it despite the ignore rule: `git add -f tasks/feature-stage.md`, then commit it as part of the worktree setup, before starting stage 1. Every subsequent update to it (see "Stage gate pattern" below) must also use `git add -f`.
-   - All subsequent work for this feature happens inside that worktree.
 
 ## Stage gate pattern
 
 After **every** stage below:
-1. Update `tasks/feature-stage.md`, checking off the completed stage, and commit it with `git add -f tasks/feature-stage.md` (it's gitignored by default in this repo — force-adding is what makes resume state durable rather than dependent on the worktree directory surviving untouched).
+1. Update `tasks/feature-stage.md`, checking off the completed stage, and commit it with `git add -f tasks/feature-stage.md`.
 2. Present a concise summary of what the stage produced.
 3. Offer both continuation paths and let the human pick in the moment:
    - **Continue now**: use AskUserQuestion with options approve / revise / stop. On approve, proceed immediately to the next stage in this same turn.
@@ -56,7 +54,7 @@ Invoke `/agent-skills:plan`.
 Invoke `/agent-skills:build auto`.
 
 ### 4. Review
-`/agent-skills:review` runs directly in the invoking context by default — it does not use a subagent on its own. Run it as a subagent explicitly instead: use the Agent tool with `subagent_type: agent-skills:code-reviewer`, passing it `/agent-skills:review`'s own instructions as the prompt, against the accumulated diff on this branch.
+Invoke `/agent-skills:review`.
 
 - Do not auto-fix anything: apply only the fixes the human selects from the findings, then re-commit.
 
