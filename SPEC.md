@@ -94,11 +94,11 @@ public class JobService
 - **Never do:** commit the `jobboard.db` file or any secrets; add features from the "out of scope" list without discussing first.
 
 ## Success Criteria
-- [ ] `dotnet run` starts the app and `/` loads with an empty job list on first run.
-- [ ] `/post` form creates a job and redirects to `/`, where the new job appears at the top.
-- [ ] Job list is ordered newest-first by `PostedDate`.
-- [ ] `dotnet test` passes with unit tests covering `JobService.AddJobAsync` and `GetAllJobsAsync`.
-- [ ] No auth required anywhere; no search/filter/edit/delete present.
+- [x] `dotnet run` starts the app and `/` loads with an empty job list on first run.
+- [x] `/post` form creates a job and redirects to `/`, where the new job appears at the top.
+- [x] Job list is ordered newest-first by `PostedDate`.
+- [x] `dotnet test` passes with unit tests covering `JobService.AddJobAsync` and `GetAllJobsAsync`.
+- [x] No auth required anywhere; no search/filter/edit/delete present.
 
 ## Open Questions
 None — MVP scope confirmed: create + list only, no auth, no search/filter.
