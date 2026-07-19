@@ -26,12 +26,13 @@ Arguments: `$ARGUMENTS`
      - [ ] review
      - [ ] ship (+ PR)
      ```
+   - This repo's `.gitignore` has a bare `tasks/` entry, so this tracker is untracked by default and would not survive a `git clean` or a lost worktree. Force-add it despite the ignore rule: `git add -f tasks/feature-stage.md`, then commit it as part of the worktree setup, before starting stage 1. Every subsequent update to it (see "Stage gate pattern" below) must also use `git add -f`.
    - All subsequent work for this feature happens inside that worktree.
 
 ## Stage gate pattern
 
 After **every** stage below:
-1. Update `tasks/feature-stage.md`, checking off the completed stage.
+1. Update `tasks/feature-stage.md`, checking off the completed stage, and commit it with `git add -f tasks/feature-stage.md` (it's gitignored by default in this repo — force-adding is what makes resume state durable rather than dependent on the worktree directory surviving untouched).
 2. Present a concise summary of what the stage produced.
 3. Offer both continuation paths and let the human pick in the moment:
    - **Continue now**: use AskUserQuestion with options approve / revise / stop. On approve, proceed immediately to the next stage in this same turn.
@@ -43,7 +44,7 @@ After **every** stage below:
 ### 1. Spec
 Invoke `/agent-skills:spec` (spec-driven-development). Feed it the feature description (or, on resume, whatever context is needed to pick the conversation back up).
 
-- If `SPEC.md` already exists (from a prior feature run in this repo's history), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch.
+- Before assuming this is the first spec ever, search the whole repo for an existing `SPEC.md` — not just the root (e.g. `find . -iname SPEC.md`). If one already exists anywhere (root or a subproject), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch, and never create a second, disconnected `SPEC.md` elsewhere. If an existing `SPEC.md` is found somewhere other than root (e.g. inside a subproject directory), confirm with the human which one this feature belongs to before writing.
 - Every write to `SPEC.md` — including the very first one ever — gets a matching entry in `docs/changes/yyyy-mm-dd-<slug>.md` describing what changed and why.
 - Get explicit human approval of the spec content itself (this is part of the skill's own flow) before checking off this stage.
 - **Before moving to stage 3, commit `SPEC.md` and its `docs/changes/*.md` entry.** `/build auto`'s own clean-baseline check (`git status --porcelain`) does not whitelist `docs/changes/*`, so an uncommitted changelog file would make it stop and ask. Committing here also satisfies `/build auto`'s requirement that planning artifacts not bleed into the first task's commit.
@@ -55,7 +56,7 @@ Invoke `/agent-skills:plan`.
 Invoke `/agent-skills:build auto`.
 
 ### 4. Review
-Invoke `/agent-skills:review` using a sub agent.
+`/agent-skills:review` runs directly in the invoking context by default — it does not use a subagent on its own. Run it as a subagent explicitly instead: use the Agent tool with `subagent_type: agent-skills:code-reviewer`, passing it `/agent-skills:review`'s own instructions as the prompt, against the accumulated diff on this branch.
 
 - Do not auto-fix anything: apply only the fixes the human selects from the findings, then re-commit.
 
