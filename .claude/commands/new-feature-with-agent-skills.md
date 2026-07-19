@@ -43,27 +43,27 @@ After **every** stage below:
 ### 1. Spec
 Invoke `/spec` (spec-driven-development). Feed it the feature description (or, on resume, whatever context is needed to pick the conversation back up).
 
-- Target file is `docs/SPEC.md` (this matches one of the paths `/build auto` already recognizes, so stage 3 will find it without extra help).
-- If `docs/SPEC.md` already exists (from a prior feature run in this repo's history), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch.
-- Every write to `docs/SPEC.md` — including the very first one ever — gets a matching entry in `docs/changes/yyyy-mm-dd-<slug>.md` describing what changed and why.
+- Target file is `SPEC.md` at the project root — `/spec`'s own default, and one of the paths `/build auto` already recognizes, so no override is needed for either.
+- If `SPEC.md` already exists (from a prior feature run in this repo's history), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch.
+- Every write to `SPEC.md` — including the very first one ever — gets a matching entry in `docs/changes/yyyy-mm-dd-<slug>.md` describing what changed and why.
 - Get explicit human approval of the spec content itself (this is part of the skill's own flow) before checking off this stage.
-- **Before moving to stage 3, commit `docs/SPEC.md` and its `docs/changes/*.md` entry.** `/build auto`'s own clean-baseline check (`git status --porcelain`) does not whitelist `docs/changes/*`, so an uncommitted changelog file would make it stop and ask. Committing here also satisfies `/build auto`'s requirement that planning artifacts not bleed into the first task's commit.
+- **Before moving to stage 3, commit `SPEC.md` and its `docs/changes/*.md` entry.** `/build auto`'s own clean-baseline check (`git status --porcelain`) does not whitelist `docs/changes/*`, so an uncommitted changelog file would make it stop and ask. Committing here also satisfies `/build auto`'s requirement that planning artifacts not bleed into the first task's commit.
 
 ### 2. Plan
-Invoke `/plan` (planning-and-task-breakdown) against the approved `docs/SPEC.md`. Produces `tasks/plan.md` and `tasks/todo.md` as usual.
+Invoke `/plan` against the approved `SPEC.md`. Produces `tasks/plan.md` and `tasks/todo.md` as usual.
 
 ### 3. Build
 Invoke `/build auto`. Runs the full per-task TDD loop (write failing test, implement, verify, commit) across the whole plan after a single approval, per that command's own rules. Do not re-run `/test` separately afterward — the per-task loop plus the review/ship stages below already cover it.
 
 ### 4. Review
-Invoke the `code-reviewer` subagent directly (not the full `/ship` fan-out — that would duplicate work done in stage 5) against the accumulated changes on this branch. Use the standard five-axis review template.
+Invoke the `/code-reviewer` command using a sub agent.
 
 - Present **all** findings (Critical / Important / Suggestion) to the human as-is.
 - Do not auto-fix anything. Let the human choose which findings to act on.
 - Apply only the fixes the human selects, then re-commit.
 
 ### 5. Ship
-Invoke `/ship` (shipping-and-launch's 3-persona fan-out: code-reviewer, security-auditor, test-engineer) for the pre-launch checklist and GO/NO-GO decision.
+Invoke `/ship` command.
 
 - Present all findings from the merged report to the human as-is — no auto-fixing.
 - Apply only the fixes the human selects, then re-commit.
