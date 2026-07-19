@@ -26,8 +26,8 @@ public class JobServiceTests
             Company = "Acme",
             Location = "Remote",
             Description = "Build things",
-            JobType = JobType.FullTime,
-            Remote = RemoteType.Remote,
+            EmploymentType = JobType.FullTime,
+            LocationType = RemoteType.Remote,
         };
 
         await service.AddJobAsync(job);
@@ -46,8 +46,8 @@ public class JobServiceTests
             Company = "Acme",
             Location = "Remote",
             Description = "First posted",
-            JobType = JobType.FullTime,
-            Remote = RemoteType.Remote,
+            EmploymentType = JobType.FullTime,
+            LocationType = RemoteType.Remote,
             PostedDate = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
         };
         var newer = new Job
@@ -56,8 +56,8 @@ public class JobServiceTests
             Company = "Acme",
             Location = "Remote",
             Description = "Posted later",
-            JobType = JobType.Contract,
-            Remote = RemoteType.Onsite,
+            EmploymentType = JobType.Contract,
+            LocationType = RemoteType.Onsite,
             PostedDate = new DateTime(2026, 6, 1, 0, 0, 0, DateTimeKind.Utc),
         };
         await service.AddJobAsync(older);
