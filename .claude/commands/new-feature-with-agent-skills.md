@@ -41,7 +41,7 @@ After **every** stage below:
 ## Stages
 
 ### 1. Spec
-Invoke `/spec` (spec-driven-development). Feed it the feature description (or, on resume, whatever context is needed to pick the conversation back up).
+Invoke `/agent-skills:spec` (spec-driven-development). Feed it the feature description (or, on resume, whatever context is needed to pick the conversation back up).
 
 - If `SPEC.md` already exists (from a prior feature run in this repo's history), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch.
 - Every write to `SPEC.md` — including the very first one ever — gets a matching entry in `docs/changes/yyyy-mm-dd-<slug>.md` describing what changed and why.
@@ -49,18 +49,18 @@ Invoke `/spec` (spec-driven-development). Feed it the feature description (or, o
 - **Before moving to stage 3, commit `SPEC.md` and its `docs/changes/*.md` entry.** `/build auto`'s own clean-baseline check (`git status --porcelain`) does not whitelist `docs/changes/*`, so an uncommitted changelog file would make it stop and ask. Committing here also satisfies `/build auto`'s requirement that planning artifacts not bleed into the first task's commit.
 
 ### 2. Plan
-Invoke `/plan`.
+Invoke `/agent-skills:plan`.
 
 ### 3. Build
-Invoke `/build auto`.
+Invoke `/agent-skills:build auto`.
 
 ### 4. Review
-Invoke `/review` using a sub agent.
+Invoke `/agent-skills:review` using a sub agent.
 
 - Do not auto-fix anything: apply only the fixes the human selects from the findings, then re-commit.
 
 ### 5. Ship
-Invoke `/ship`.
+Invoke `/agent-skills:ship`.
 
 - Do not auto-fix anything: apply only the fixes the human selects from the merged report, then re-commit.
 - Once the human is satisfied and the decision is GO, create the PR with `gh pr create`, using a summary that reflects the full feature (spec intent, plan, what was built, review/ship findings and resolutions).
