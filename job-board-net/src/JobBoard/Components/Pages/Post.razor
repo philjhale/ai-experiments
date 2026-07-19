@@ -50,6 +50,11 @@
         </InputSelect>
     </div>
 
+    <div class="mb-3">
+        <label for="applicationUrl" class="form-label">Application URL</label>
+        <InputText id="applicationUrl" class="form-control" @bind-Value="job.ApplicationUrl" />
+    </div>
+
     <button type="submit" class="btn btn-primary">Post Job</button>
 </EditForm>
 
@@ -72,6 +77,7 @@
             Description = job.Description,
             EmploymentType = job.EmploymentType,
             LocationType = job.LocationType,
+            ApplicationUrl = job.ApplicationUrl,
         });
         NavigationManager.NavigateTo("/");
     }
@@ -93,5 +99,9 @@
         public JobType EmploymentType { get; set; }
 
         public RemoteType LocationType { get; set; }
+
+        [Required]
+        [Url]
+        public string ApplicationUrl { get; set; } = "";
     }
 }
