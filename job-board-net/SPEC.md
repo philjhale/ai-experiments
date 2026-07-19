@@ -45,8 +45,8 @@ public class Job
     public string Company { get; set; } = "";
     public string Location { get; set; } = "";
     public string Description { get; set; } = "";
-    public JobType JobType { get; set; }
-    public RemoteType Remote { get; set; }
+    public JobType EmploymentType { get; set; }
+    public RemoteType LocationType { get; set; }
     public DateTime PostedDate { get; set; } = DateTime.UtcNow;
 }
 
@@ -55,9 +55,11 @@ public enum RemoteType { Remote, Onsite, Hybrid }
 ```
 All fields required except `PostedDate`, which is set automatically on creation.
 
+Note: the `Job.JobType` and `Job.Remote` properties were renamed to `EmploymentType` and `LocationType` for clarity. The enum *type* names (`JobType`, `RemoteType`) and their member values are unchanged — only the property names, DB columns, and UI labels changed. Requires a new EF Core migration (rename columns; do not edit `InitialCreate` in place).
+
 ## Pages
-- `/` — Job list. Displays all jobs, newest `PostedDate` first. Each entry shows Title, Company, Location, JobType, Remote, and a truncated/full Description.
-- `/post` — Create job form. Fields for all Job properties except `Id` and `PostedDate`. On valid submit, saves via `JobService` and redirects to `/`.
+- `/` — Job list. Displays all jobs, newest `PostedDate` first. Each entry shows Title, Company, Location, EmploymentType, LocationType, and a truncated/full Description.
+- `/post` — Create job form. Fields for all Job properties except `Id` and `PostedDate`. Labels read "Employment Type" and "Location Type". On valid submit, saves via `JobService` and redirects to `/`.
 
 ## Code Style
 - Standard C# conventions: PascalCase for public members/types, camelCase for locals/params, `_camelCase` for private fields.
@@ -102,3 +104,24 @@ public class JobService
 
 ## Open Questions
 None — MVP scope confirmed: create + list only, no auth, no search/filter.
+
+---
+
+## Change: Rename `JobType` → `EmploymentType`, `Remote` → `LocationType` (2026-07-19)
+
+Renames two `Job` model properties for clarity. Not a behavior change — no new fields, no functional changes.
+
+**Scope:**
+- `Job.cs`: property `JobType` → `EmploymentType`, property `Remote` → `LocationType`. Enum type/value names (`JobType`, `RemoteType`, `FullTime`/`PartTime`/`Contract`, `Remote`/`Onsite`/`Hybrid`) unchanged.
+- `JobBoardContext.cs` / `JobService.cs`: no references to old property names.
+- New EF Core migration renames the `JobType`/`Remote` columns (existing `InitialCreate` migration left as-is).
+- `Home.razor`: badge display uses `@job.EmploymentType` / `@job.LocationType`.
+- `Post.razor`: form labels read "Employment Type" / "Location Type"; `@bind-Value` and `JobInput` property names updated.
+- `JobServiceTests.cs` updated to new property names.
+
+**Acceptance:**
+- [ ] `dotnet build` succeeds.
+- [ ] `dotnet test` passes.
+- [ ] UI shows "Employment Type" and "Location Type" labels where "Job Type" and "Remote" appeared before.
+
+**Boundaries:** ask first before renaming the `Job` entity itself, the enum values, or the `JobBoard` project/namespace — out of scope for this change.

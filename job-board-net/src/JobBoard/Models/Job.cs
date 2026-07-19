@@ -7,8 +7,8 @@ public class Job
     public string Company { get; set; } = "";
     public string Location { get; set; } = "";
     public string Description { get; set; } = "";
-    public JobType JobType { get; set; }
-    public RemoteType Remote { get; set; }
+    public JobType EmploymentType { get; set; }
+    public RemoteType LocationType { get; set; }
     public DateTime PostedDate { get; set; } = DateTime.UtcNow;
 }
 
