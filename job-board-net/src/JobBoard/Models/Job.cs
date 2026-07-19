@@ -9,6 +9,7 @@ public class Job
     public string Description { get; set; } = "";
     public JobType EmploymentType { get; set; }
     public RemoteType LocationType { get; set; }
+    public string ApplicationUrl { get; set; } = "";
     public DateTime PostedDate { get; set; } = DateTime.UtcNow;
 }
 

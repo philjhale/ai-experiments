@@ -47,6 +47,7 @@ public class Job
     public string Description { get; set; } = "";
     public JobType EmploymentType { get; set; }
     public RemoteType LocationType { get; set; }
+    public string ApplicationUrl { get; set; } = "";
     public DateTime PostedDate { get; set; } = DateTime.UtcNow;
 }
 
@@ -58,8 +59,8 @@ All fields required except `PostedDate`, which is set automatically on creation.
 Note: the `Job.JobType` and `Job.Remote` properties were renamed to `EmploymentType` and `LocationType` for clarity. The enum *type* names (`JobType`, `RemoteType`) and their member values are unchanged — only the property names, DB columns, and UI labels changed. Requires a new EF Core migration (rename columns; do not edit `InitialCreate` in place).
 
 ## Pages
-- `/` — Job list. Displays all jobs, newest `PostedDate` first. Each entry shows Title, Company, Location, EmploymentType, LocationType, and a truncated/full Description.
-- `/post` — Create job form. Fields for all Job properties except `Id` and `PostedDate`. Labels read "Employment Type" and "Location Type". On valid submit, saves via `JobService` and redirects to `/`.
+- `/` — Job list. Displays all jobs, newest `PostedDate` first. Each entry shows Title, Company, Location, EmploymentType, LocationType, a truncated/full Description, and an "Apply" link pointing at `ApplicationUrl`.
+- `/post` — Create job form. Fields for all Job properties except `Id` and `PostedDate`. Labels read "Employment Type", "Location Type", and "Application URL". `ApplicationUrl` is validated as a well-formed URL. On valid submit, saves via `JobService` and redirects to `/`.
 
 ## Code Style
 - Standard C# conventions: PascalCase for public members/types, camelCase for locals/params, `_camelCase` for private fields.
@@ -125,3 +126,25 @@ Renames two `Job` model properties for clarity. Not a behavior change — no new
 - [ ] UI shows "Employment Type" and "Location Type" labels where "Job Type" and "Remote" appeared before.
 
 **Boundaries:** ask first before renaming the `Job` entity itself, the enum values, or the `JobBoard` project/namespace — out of scope for this change.
+
+---
+
+## Change: Add `ApplicationUrl` to Job (2026-07-19)
+
+Adds a new required `ApplicationUrl` field to `Job` — the URL candidates use to apply. Additive change: new field, new column, no renames.
+
+**Scope:**
+- `Job.cs`: new `public string ApplicationUrl { get; set; } = "";` property, required like the other string fields.
+- `Post.razor`: `JobInput` gets a new `ApplicationUrl` property with `[Required]` and `[Url]` data annotations; new "Application URL" labeled `InputText` field; `HandleValidSubmit` mapping includes `ApplicationUrl = job.ApplicationUrl`.
+- `Home.razor`: each job entry gets a clickable "Apply" link (`<a href="@job.ApplicationUrl">`) pointing at `ApplicationUrl`.
+- New EF Core migration adds the `ApplicationUrl` column to the `Jobs` table (existing migrations left as-is, per established convention).
+- `JobServiceTests.cs`: existing `Job` object literals updated to include `ApplicationUrl`.
+
+**Acceptance:**
+- [ ] `dotnet build` succeeds.
+- [ ] `dotnet test` passes.
+- [ ] `/post` form has an "Application URL" field, required, rejects malformed URLs.
+- [ ] `/` shows a clickable "Apply" link for each job, pointing at its `ApplicationUrl`.
+- [ ] New migration applies cleanly via `dotnet ef database update`.
+
+**Boundaries:** no changes to other Job properties, no new pages/routes, no auth — out of scope for this change.

@@ -28,6 +28,7 @@ public class JobServiceTests
             Description = "Build things",
             EmploymentType = JobType.FullTime,
             LocationType = RemoteType.Remote,
+            ApplicationUrl = "https://acme.example.com/careers/backend-engineer",
         };
 
         await service.AddJobAsync(job);
@@ -48,6 +49,7 @@ public class JobServiceTests
             Description = "First posted",
             EmploymentType = JobType.FullTime,
             LocationType = RemoteType.Remote,
+            ApplicationUrl = "https://acme.example.com/careers/older-job",
             PostedDate = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc),
         };
         var newer = new Job
@@ -58,6 +60,7 @@ public class JobServiceTests
             Description = "Posted later",
             EmploymentType = JobType.Contract,
             LocationType = RemoteType.Onsite,
+            ApplicationUrl = "https://acme.example.com/careers/newer-job",
             PostedDate = new DateTime(2026, 6, 1, 0, 0, 0, DateTimeKind.Utc),
         };
         await service.AddJobAsync(older);

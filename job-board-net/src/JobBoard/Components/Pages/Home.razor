@@ -29,6 +29,7 @@ else
                 </p>
                 <p class="card-text">@job.Description</p>
                 <p class="card-text"><small class="text-muted">Posted @job.PostedDate.ToLocalTime().ToString("g")</small></p>
+                <a class="btn btn-outline-primary" href="@job.ApplicationUrl" rel="noopener noreferrer">Apply</a>
             </div>
         </div>
     }
