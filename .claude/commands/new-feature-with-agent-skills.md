@@ -61,6 +61,7 @@ Invoke `/agent-skills:review`.
 ### 5. Ship
 Invoke `/agent-skills:ship`.
 
+- Once the human is satisfied and the decision is GO, create the PR with `gh pr create`, using a summary that reflects the full feature (spec intent, plan, what was built, review/ship findings and resolutions).
 - **Stop after the PR is created.** Do not merge it — that stays a manual step for the human.
 
 ## Blockers
