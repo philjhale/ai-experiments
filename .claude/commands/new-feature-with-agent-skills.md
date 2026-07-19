@@ -55,7 +55,7 @@ Invoke `/plan`.
 Invoke `/build auto`.
 
 ### 4. Review
-Invoke `/review`.
+Invoke `/review` using a sub agent.
 
 - Do not auto-fix anything: apply only the fixes the human selects from the findings, then re-commit.
 
