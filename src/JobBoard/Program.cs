@@ -1,5 +1,6 @@
 using JobBoard.Components;
 using JobBoard.Data;
+using JobBoard.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +11,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddDbContext<JobBoardContext>(options =>
     options.UseSqlite("Data Source=jobboard.db"));
+builder.Services.AddScoped<JobService>();
 
 var app = builder.Build();
 
