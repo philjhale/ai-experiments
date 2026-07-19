@@ -4,4 +4,4 @@
 - [x] plan
 - [x] build
 - [x] review
-- [ ] ship (+ PR)
+- [x] ship (+ PR)
