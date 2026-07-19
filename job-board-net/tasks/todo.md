@@ -1,6 +1,6 @@
 # Todo: Rename JobType→EmploymentType, Remote→LocationType
 
-## Task 1: Rename properties on `Job` model
+## Task 1: Rename properties on `Job` model ✅ done
 
 **Description:** Rename `Job.JobType` → `Job.EmploymentType` and `Job.Remote` → `Job.LocationType`. Enum type names (`JobType`, `RemoteType`) and enum member values are unchanged — only the two property declarations change.
 
@@ -21,7 +21,7 @@
 
 ---
 
-## Task 2: Add EF Core migration for column rename
+## Task 2: Add EF Core migration for column rename ✅ done
 
 **Description:** Generate a new migration that renames the `JobType` and `Remote` columns in the `Jobs` table to `EmploymentType` and `LocationType`. Do not edit `InitialCreate` in place.
 
@@ -45,7 +45,7 @@
 
 ---
 
-## Task 3: Update `Home.razor` and `Post.razor`
+## Task 3: Update `Home.razor` and `Post.razor` ✅ done
 
 **Description:** Update all UI references from `job.JobType`/`job.Remote` to `job.EmploymentType`/`job.LocationType`, update form labels to "Employment Type" and "Location Type", and rename the `JobInput` helper properties in `Post.razor`.
 
