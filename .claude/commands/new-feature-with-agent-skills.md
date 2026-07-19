@@ -52,24 +52,21 @@ Invoke `/spec` (spec-driven-development). Feed it the feature description (or, o
 Invoke `/plan`.
 
 ### 3. Build
-Invoke `/build auto`. 
+Invoke `/build auto`.
 
 ### 4. Review
-Invoke the `/code-reviewer` command using a sub agent.
+Invoke `/review`.
 
-- Present **all** findings (Critical / Important / Suggestion) to the human as-is.
-- Do not auto-fix anything. Let the human choose which findings to act on.
-- Apply only the fixes the human selects, then re-commit.
+- Do not auto-fix anything: apply only the fixes the human selects from the findings, then re-commit.
 
 ### 5. Ship
-Invoke `/ship` command.
+Invoke `/ship`.
 
-- Present all findings from the merged report to the human as-is — no auto-fixing.
-- Apply only the fixes the human selects, then re-commit.
+- Do not auto-fix anything: apply only the fixes the human selects from the merged report, then re-commit.
 - Once the human is satisfied and the decision is GO, create the PR with `gh pr create`, using a summary that reflects the full feature (spec intent, plan, what was built, review/ship findings and resolutions).
 - **Stop after the PR is created.** Do not merge it — that stays a manual step for the human.
 - Check off the final stage in `tasks/feature-stage.md`.
 
 ## Blockers
 
-If any stage hits something it can't resolve on its own — a test that won't pass, an ambiguous spec point, a high-risk/irreversible change (auth, payments, deletions, secrets), or a Critical finding the human hasn't yet decided on — stop and ask, following `debugging-and-error-recovery` or `doubt-driven-development` as appropriate. Leave `tasks/feature-stage.md` reflecting the true state so a later resume picks up correctly.
+Each invoked command enforces its own stop conditions (e.g. `/build auto` already stops on a failing test, an ambiguous spec, or a high-risk/irreversible change — see that command's own rules). This orchestrator adds one more on top: an unresolved Critical finding from `/review` or `/ship` is always a blocker. On any blocker, stop and ask rather than push through, and leave `tasks/feature-stage.md` reflecting the true state so a later resume picks up correctly.
