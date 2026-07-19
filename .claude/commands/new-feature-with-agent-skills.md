@@ -52,6 +52,8 @@ Invoke `/agent-skills:spec` (spec-driven-development). Feed it the feature descr
 ### 2. Plan
 Invoke `/agent-skills:plan`.
 
+- **Before moving to stage 3, commit `tasks/plan.md` and `tasks/todo.md`.** `/build auto` only commits `tasks/plan.md` itself when *it* generates the plan inline (its "no plan exists yet" branch) — since this stage already created it, that branch never fires, and the plan would otherwise stay uncommitted through the rest of the pipeline.
+
 ### 3. Build
 Invoke `/agent-skills:build auto`.
 
