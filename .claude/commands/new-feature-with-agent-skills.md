@@ -10,7 +10,7 @@ Arguments: `$ARGUMENTS`
 
 ## Resuming vs. starting new
 
-1. Run `git status`. If the current directory is inside a feature worktree created by this command (i.e. `tasks/feature-stage.md` exists somewhere up the tree), this is a **resume**:
+1. Run `git status`. If the current directory is inside a feature worktree created by this command (i.e. `tasks/feature-stage.md` exists somewhere up the tree), this is a **resume**. Note: `tasks/` is deleted as the last step of the ship stage once a PR exists (see stage 5), so by design a fully-shipped feature has no `tasks/feature-stage.md` left to resume from — that's expected, not a bug.
    - Read `tasks/feature-stage.md` to find the last completed stage.
    - If every stage is already checked off, tell the human this feature is already shipped and stop — do not re-invoke any stage.
    - Otherwise, if arguments were also passed, don't discard them silently: tell the human this worktree has an in-progress feature at stage X and that you're resuming it instead of starting the new description they gave — they can say so if they meant to start fresh elsewhere.
@@ -42,10 +42,10 @@ After **every** stage below:
 ## Stages
 
 ### 1. Spec
-Invoke `/agent-skills:spec` (spec-driven-development). Feed it the feature description (or, on resume, whatever context is needed to pick the conversation back up). A brand-new spec is written to `docs/SPEC.md`.
+Invoke `/agent-skills:spec` (spec-driven-development). Feed it the feature description (or, on resume, whatever context is needed to pick the conversation back up). A brand-new spec is always written to `docs/SPEC.md` under the relevant project root (repo root for a single-project repo, `<subproject>/docs/SPEC.md` in a monorepo) — never a bare `SPEC.md` at the project root.
 
-- Before assuming this is the first spec ever, search the whole repo for existing specs — not just the root (e.g. `find . -iname SPEC.md`). If exactly one exists (root or a subproject), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch, and never create a second, disconnected spec elsewhere. If the search finds **more than one** spec (e.g. a monorepo with several subproject specs), confirm with the human which one this feature belongs to before writing, regardless of whether one of them happens to be at root.
-- Every write to the spec — including the very first one ever — gets a matching entry in `docs/changes/yyyy-mm-dd-<slug>.md` describing what changed and why.
+- Before assuming this is the first spec ever, search the whole repo for existing specs — not just `docs/` (e.g. `find . -iname SPEC.md`). If exactly one exists (under `docs/` or elsewhere), **amend it in place**: read it first, add or update only the sections relevant to this feature, and leave unrelated existing content untouched. Never regenerate the whole file from scratch, and never create a second, disconnected spec elsewhere. If the found spec is **not** under a `docs/` directory, still amend it where it is — don't silently move it — but tell the human it's a pre-existing location drift from the `docs/SPEC.md` convention, so they can decide whether to relocate it separately. If the search finds **more than one** spec (e.g. a monorepo with several subproject specs), confirm with the human which one this feature belongs to before writing, regardless of whether one of them happens to be at root.
+- Every write to the spec — including the very first one ever — gets a matching entry in `docs/changes/yyyy-mm-dd-<slug>.md` describing what changed and why. **SPEC.md itself never accumulates this history**: don't append dated `## Change: ...` sections to it. Instead, edit the relevant existing sections (Data Model, Pages, Boundaries, etc.) in place so SPEC.md always reads as the current state, not a log. The changelog narrative belongs only in `docs/changes/*.md`.
 - Get explicit human approval of the spec content itself (this is part of the skill's own flow) before checking off this stage.
 - **Before moving to stage 3, commit the spec and its `docs/changes/*.md` entry.** `/build auto`'s own clean-baseline check (`git status --porcelain`) does not whitelist `docs/changes/*`, so an uncommitted changelog file would make it stop and ask. Committing here also satisfies `/build auto`'s requirement that planning artifacts not bleed into the first task's commit.
 
@@ -63,8 +63,9 @@ Invoke `/agent-skills:review`.
 ### 5. Ship
 Invoke `/agent-skills:ship`.
 
-- Once the human is satisfied and the decision is GO, create the PR with `gh pr create`, using a summary that reflects the full feature (spec intent, plan, what was built, review/ship findings and resolutions).
-- **Stop after the PR is created.** Do not merge it — that stays a manual step for the human.
+- Once the human is satisfied and the decision is GO, create the PR with `gh pr create` as a normal, ready-for-review PR — do **not** pass `--draft`.
+- Once `gh pr create` has succeeded and returned a PR URL, remove the `tasks/` directory (`tasks/feature-stage.md`, `tasks/plan.md`, `tasks/todo.md`), commit that deletion on its own (e.g. `chore: remove tasks folder`), and push. Since the PR already tracks this branch, the push lands in the PR automatically. Do this only *after* the PR URL is confirmed — deleting the resume tracker before the PR exists would strand the feature with no save point if `gh pr create` fails.
+- **Stop after this cleanup commit is pushed.** Do not merge the PR — that stays a manual step for the human.
 
 ## Blockers
 
