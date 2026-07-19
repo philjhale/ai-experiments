@@ -31,8 +31,8 @@
     </div>
 
     <div class="mb-3">
-        <label for="jobType" class="form-label">Job Type</label>
-        <InputSelect id="jobType" class="form-select" @bind-Value="job.JobType">
+        <label for="employmentType" class="form-label">Employment Type</label>
+        <InputSelect id="employmentType" class="form-select" @bind-Value="job.EmploymentType">
             @foreach (var type in Enum.GetValues<JobType>())
             {
                 <option value="@type">@type</option>
@@ -41,8 +41,8 @@
     </div>
 
     <div class="mb-3">
-        <label for="remote" class="form-label">Remote</label>
-        <InputSelect id="remote" class="form-select" @bind-Value="job.Remote">
+        <label for="locationType" class="form-label">Location Type</label>
+        <InputSelect id="locationType" class="form-select" @bind-Value="job.LocationType">
             @foreach (var remoteType in Enum.GetValues<RemoteType>())
             {
                 <option value="@remoteType">@remoteType</option>
@@ -70,8 +70,8 @@
             Company = job.Company,
             Location = job.Location,
             Description = job.Description,
-            JobType = job.JobType,
-            Remote = job.Remote,
+            EmploymentType = job.EmploymentType,
+            LocationType = job.LocationType,
         });
         NavigationManager.NavigateTo("/");
     }
@@ -90,8 +90,8 @@
         [Required]
         public string Description { get; set; } = "";
 
-        public JobType JobType { get; set; }
+        public JobType EmploymentType { get; set; }
 
-        public RemoteType Remote { get; set; }
+        public RemoteType LocationType { get; set; }
     }
 }

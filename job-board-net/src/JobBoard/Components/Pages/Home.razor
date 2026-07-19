@@ -24,8 +24,8 @@ else
                 <h5 class="card-title">@job.Title</h5>
                 <h6 class="card-subtitle mb-2 text-muted">@job.Company &middot; @job.Location</h6>
                 <p class="card-text">
-                    <span class="badge bg-secondary">@job.JobType</span>
-                    <span class="badge bg-secondary">@job.Remote</span>
+                    <span class="badge bg-secondary">@job.EmploymentType</span>
+                    <span class="badge bg-secondary">@job.LocationType</span>
                 </p>
                 <p class="card-text">@job.Description</p>
                 <p class="card-text"><small class="text-muted">Posted @job.PostedDate.ToLocalTime().ToString("g")</small></p>
