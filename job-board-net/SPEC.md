@@ -148,3 +148,25 @@ Adds a new required `ApplicationUrl` field to `Job` — the URL candidates use t
 - [ ] New migration applies cleanly via `dotnet ef database update`.
 
 **Boundaries:** no changes to other Job properties, no new pages/routes, no auth — out of scope for this change.
+
+---
+
+## Change: GitHub Actions CI — run tests on PR (2026-07-20)
+
+Adds a GitHub Actions workflow that runs the C# test suite (`dotnet test`) automatically whenever a pull request is opened against the repo, giving PR authors/reviewers fast feedback before merge.
+
+**Scope:**
+- New file `.github/workflows/tests.yml`.
+- Trigger: `pull_request` event, types `opened`, `synchronize`, `reopened` — re-running on new pushes to an open PR (not just the initial open) is standard practice and avoids stale green checks; flagged here since the request said "when a PR is opened."
+- Runner: `ubuntu-latest`.
+- Steps: checkout, `actions/setup-dotnet` pinned to .NET 10.x (matching the `TargetFramework` already in `src/JobBoard/JobBoard.csproj` / `tests/JobBoard.Tests/JobBoard.Tests.csproj`), `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build`.
+- Scoped to the `job-board-net/` subfolder (repo has other top-level projects); workflow `working-directory` / paths set accordingly, and `paths:` filter limited to `job-board-net/**` plus the workflow file itself so unrelated changes elsewhere in the repo don't trigger it.
+- No branch filter (`branches:`) — runs for PRs targeting any base branch, matching "when a PR is opened" with no stated restriction.
+
+**Acceptance:**
+- [ ] `.github/workflows/tests.yml` exists and is valid YAML.
+- [ ] Workflow triggers on `pull_request` (opened/synchronize/reopened) for changes under `job-board-net/`.
+- [ ] Workflow runs `dotnet restore`, `dotnet build`, `dotnet test` against `JobBoard.slnx` (or the test project directly) and fails the check on test failure.
+- [ ] A PR that breaks a test shows a failing check; a PR with passing tests shows a passing check.
+
+**Boundaries:** no code coverage reporting, no matrix/multi-OS testing, no deployment steps — out of scope for this change. Ask first before adding status badges to `README.md` or branch-protection rule changes (those are repo-settings changes, not part of this workflow file).
