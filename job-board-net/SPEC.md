@@ -5,7 +5,7 @@ A general-purpose job board web app. Employers can post job listings; visitors s
 
 **Success looks like:** a visitor can open the site, see a list of all posted jobs (newest first), click "Post a Job," fill out a form, submit it, and immediately see it appear at the top of the list.
 
-**Out of scope for MVP:** authentication, editing/deleting jobs, search/filtering, pagination, email notifications, styling polish.
+**Out of scope for MVP:** authentication, editing jobs, search/filtering, pagination, email notifications, styling polish. (Deleting jobs is in scope — see "Change: Add job deletion" below.)
 
 ## Tech Stack
 - .NET 10 (only SDK available on the dev machine at scaffold time; originally spec'd as .NET 8)
@@ -59,7 +59,7 @@ All fields required except `PostedDate`, which is set automatically on creation.
 Note: the `Job.JobType` and `Job.Remote` properties were renamed to `EmploymentType` and `LocationType` for clarity. The enum *type* names (`JobType`, `RemoteType`) and their member values are unchanged — only the property names, DB columns, and UI labels changed. Requires a new EF Core migration (rename columns; do not edit `InitialCreate` in place).
 
 ## Pages
-- `/` — Job list. Displays all jobs, newest `PostedDate` first. Each entry shows Title, Company, Location, EmploymentType, LocationType, a truncated/full Description, and an "Apply" link pointing at `ApplicationUrl`.
+- `/` — Job list. Displays all jobs, newest `PostedDate` first. Each entry shows Title, Company, Location, EmploymentType, LocationType, a truncated/full Description, an "Apply" link pointing at `ApplicationUrl`, and a "Delete" button that confirms before removing the job.
 - `/post` — Create job form. Fields for all Job properties except `Id` and `PostedDate`. Labels read "Employment Type", "Location Type", and "Application URL". `ApplicationUrl` is validated as a well-formed URL. On valid submit, saves via `JobService` and redirects to `/`.
 
 ## Code Style
@@ -101,10 +101,11 @@ public class JobService
 - [x] `/post` form creates a job and redirects to `/`, where the new job appears at the top.
 - [x] Job list is ordered newest-first by `PostedDate`.
 - [x] `dotnet test` passes with unit tests covering `JobService.AddJobAsync` and `GetAllJobsAsync`.
-- [x] No auth required anywhere; no search/filter/edit/delete present.
+- [x] No auth required anywhere; no search/filter/edit present.
+- [ ] A job can be deleted from `/` after a confirmation prompt, and is immediately removed from the list.
 
 ## Open Questions
-None — MVP scope confirmed: create + list only, no auth, no search/filter.
+None — MVP scope confirmed: create + list + delete only, no auth, no search/filter/edit.
 
 ---
 
@@ -170,3 +171,24 @@ Adds a GitHub Actions workflow that runs the C# test suite (`dotnet test`) autom
 - [ ] A PR that breaks a test shows a failing check; a PR with passing tests shows a passing check.
 
 **Boundaries:** no code coverage reporting, no matrix/multi-OS testing, no deployment steps — out of scope for this change. Ask first before adding status badges to `README.md` or branch-protection rule changes (those are repo-settings changes, not part of this workflow file).
+
+---
+
+## Change: Add job deletion (2026-07-21)
+
+Adds the ability to delete a job posting from the list page. Hard delete (row removed from the `Jobs` table), triggered by a "Delete" button on each job entry on `/`, gated by a confirmation prompt to prevent accidental clicks. No new page — stays on `/`.
+
+**Scope:**
+- `JobService.cs`: new `Task DeleteJobAsync(int id)` method — finds the `Job` by id and removes it via `_context.Jobs.Remove(...)` + `SaveChangesAsync()`. No-op (or safely ignored) if the id no longer exists, to guard against double-clicks/race conditions.
+- `Home.razor`: each job entry gets a "Delete" button. Clicking it shows a confirmation prompt (via `IJSRuntime` `confirm()`) before calling `JobService.DeleteJobAsync` and refreshing the in-memory job list so the row disappears without a full page reload.
+- `JobServiceTests.cs`: new tests covering `DeleteJobAsync` — deletes an existing job (list no longer contains it, other jobs unaffected), and calling it with a non-existent id does not throw.
+- No new EF Core migration required — deletion doesn't change the schema.
+
+**Acceptance:**
+- [ ] `dotnet build` succeeds.
+- [ ] `dotnet test` passes, including new `DeleteJobAsync` tests.
+- [ ] `/` shows a "Delete" button per job entry.
+- [ ] Clicking "Delete" prompts for confirmation; confirming removes the job from the list and the database; cancelling leaves it untouched.
+- [ ] Deleting a job does not affect other jobs' ordering or data.
+
+**Boundaries:** hard delete only, no soft-delete/`IsDeleted` flag, no undo, no auth/permission check on who can delete, no new page/route — out of scope for this change.

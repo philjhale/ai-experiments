@@ -1,6 +1,6 @@
 # Feature stage tracker: delete-job-post
 
-- [ ] spec
+- [x] spec
 - [ ] plan
 - [ ] build
 - [ ] review
