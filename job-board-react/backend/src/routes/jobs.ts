@@ -16,4 +16,16 @@ export async function jobsRoutes(app: FastifyInstance) {
     const job = await prisma.job.create({ data: parsed.data });
     return reply.status(201).send(job);
   });
+
+  app.delete<{ Params: { id: string } }>("/api/jobs/:id", async (request, reply: FastifyReply) => {
+    const id = Number(request.params.id);
+
+    try {
+      await prisma.job.delete({ where: { id } });
+    } catch {
+      return reply.status(404).send({ error: "Job not found" });
+    }
+
+    return reply.status(204).send();
+  });
 }
