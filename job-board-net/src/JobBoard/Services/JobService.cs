@@ -14,4 +14,16 @@ public class JobService(JobBoardContext context)
         context.Jobs.Add(job);
         await context.SaveChangesAsync();
     }
+
+    public async Task DeleteJobAsync(int id)
+    {
+        var job = await context.Jobs.FindAsync(id);
+        if (job is null)
+        {
+            return;
+        }
+
+        context.Jobs.Remove(job);
+        await context.SaveChangesAsync();
+    }
 }
