@@ -1,0 +1,6 @@
+node_modules/
+dist/
+jobboard.db
+jobboard.db-journal
+.env
+*.log
