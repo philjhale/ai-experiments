@@ -69,4 +69,32 @@ describe("api/client", () => {
 
     expect(fetch).toHaveBeenCalledWith("/api/jobs/1", { method: "DELETE" });
   });
+
+  it("getJobs throws when the response is not ok", async () => {
+    (fetch as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: false, status: 500 });
+
+    await expect(getJobs()).rejects.toThrow("Failed to fetch jobs (500)");
+  });
+
+  it("createJob throws when the response is not ok", async () => {
+    (fetch as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: false, status: 400 });
+
+    await expect(
+      createJob({
+        title: "Engineer",
+        company: "Acme",
+        location: "Remote",
+        description: "desc",
+        employmentType: "FullTime",
+        locationType: "Remote",
+        applicationUrl: "https://example.com",
+      }),
+    ).rejects.toThrow("Failed to create job (400)");
+  });
+
+  it("deleteJob throws when the response is not ok", async () => {
+    (fetch as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: false, status: 404 });
+
+    await expect(deleteJob(1)).rejects.toThrow("Failed to delete job (404)");
+  });
 });

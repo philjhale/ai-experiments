@@ -36,4 +36,12 @@ describe("DELETE /api/jobs/:id", () => {
 
     expect(response.statusCode).toBe(404);
   });
+
+  it("returns 400 when the id param is not a valid integer", async () => {
+    const app = buildApp();
+
+    const response = await app.inject({ method: "DELETE", url: "/api/jobs/not-a-number" });
+
+    expect(response.statusCode).toBe(400);
+  });
 });

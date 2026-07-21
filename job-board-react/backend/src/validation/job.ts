@@ -14,3 +14,7 @@ export const createJobSchema = z.object({
 });
 
 export type CreateJobInput = z.infer<typeof createJobSchema>;
+
+export const jobIdParamSchema = z.object({
+  id: z.coerce.number().int().positive(),
+});

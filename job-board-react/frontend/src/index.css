@@ -109,3 +109,24 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+.apply-link {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.delete-link {
+  margin-left: 12px;
+  border: none;
+  background: none;
+  color: var(--text);
+  opacity: 0.6;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}

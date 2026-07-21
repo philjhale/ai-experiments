@@ -4,9 +4,12 @@ import type { Job } from "../types";
 
 export function JobList() {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getJobs().then(setJobs);
+    getJobs()
+      .then(setJobs)
+      .catch(() => setError("Failed to load jobs. Please try again later."));
   }, []);
 
   async function handleDelete(id: number) {
@@ -15,6 +18,10 @@ export function JobList() {
     }
     await deleteJob(id);
     setJobs((current) => current.filter((job) => job.id !== id));
+  }
+
+  if (error) {
+    return <p role="alert">{error}</p>;
   }
 
   return (
@@ -27,8 +34,10 @@ export function JobList() {
           <p>{job.employmentType}</p>
           <p>{job.locationType}</p>
           <p>{job.description}</p>
-          <a href={job.applicationUrl}>Apply</a>
-          <button type="button" onClick={() => handleDelete(job.id)}>
+          <a href={job.applicationUrl} className="apply-link">
+            Apply
+          </a>
+          <button type="button" className="delete-link" onClick={() => handleDelete(job.id)}>
             Delete
           </button>
         </li>

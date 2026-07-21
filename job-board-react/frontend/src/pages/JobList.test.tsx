@@ -72,4 +72,11 @@ describe("JobList", () => {
       expect(screen.queryByText("Older Job")).not.toBeInTheDocument();
     });
   });
+
+  it("shows an error message if the initial fetch fails", async () => {
+    (client.getJobs as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Failed to fetch jobs (500)"));
+    render(<JobList />);
+
+    expect(await screen.findByText(/failed to load jobs/i)).toBeInTheDocument();
+  });
 });
