@@ -5,7 +5,7 @@ import { PostJob } from "./pages/PostJob";
 function App() {
   return (
     <>
-      <nav>
+      <nav className="nav">
         <Link to="/">Job List</Link>
         <Link to="/post">Post a Job</Link>
       </nav>

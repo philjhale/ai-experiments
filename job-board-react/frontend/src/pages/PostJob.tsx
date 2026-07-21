@@ -64,48 +64,48 @@ export function PostJob() {
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
-      <div>
+    <form className="job-form" onSubmit={handleSubmit} noValidate>
+      <div className="field">
         <label htmlFor="title">Title</label>
         <input
           id="title"
           value={form.title}
           onChange={(e) => updateField("title", e.target.value)}
         />
-        {errors.title && <p>{errors.title}</p>}
+        {errors.title && <p className="field-error">{errors.title}</p>}
       </div>
 
-      <div>
+      <div className="field">
         <label htmlFor="company">Company</label>
         <input
           id="company"
           value={form.company}
           onChange={(e) => updateField("company", e.target.value)}
         />
-        {errors.company && <p>{errors.company}</p>}
+        {errors.company && <p className="field-error">{errors.company}</p>}
       </div>
 
-      <div>
+      <div className="field">
         <label htmlFor="location">Location</label>
         <input
           id="location"
           value={form.location}
           onChange={(e) => updateField("location", e.target.value)}
         />
-        {errors.location && <p>{errors.location}</p>}
+        {errors.location && <p className="field-error">{errors.location}</p>}
       </div>
 
-      <div>
+      <div className="field">
         <label htmlFor="description">Description</label>
         <textarea
           id="description"
           value={form.description}
           onChange={(e) => updateField("description", e.target.value)}
         />
-        {errors.description && <p>{errors.description}</p>}
+        {errors.description && <p className="field-error">{errors.description}</p>}
       </div>
 
-      <div>
+      <div className="field">
         <label htmlFor="employmentType">Employment Type</label>
         <select
           id="employmentType"
@@ -120,7 +120,7 @@ export function PostJob() {
         </select>
       </div>
 
-      <div>
+      <div className="field">
         <label htmlFor="locationType">Location Type</label>
         <select
           id="locationType"
@@ -135,17 +135,19 @@ export function PostJob() {
         </select>
       </div>
 
-      <div>
+      <div className="field">
         <label htmlFor="applicationUrl">Application URL</label>
         <input
           id="applicationUrl"
           value={form.applicationUrl}
           onChange={(e) => updateField("applicationUrl", e.target.value)}
         />
-        {errors.applicationUrl && <p>{errors.applicationUrl}</p>}
+        {errors.applicationUrl && <p className="field-error">{errors.applicationUrl}</p>}
       </div>
 
-      <button type="submit">Post Job</button>
+      <button type="submit" className="submit-button">
+        Post Job
+      </button>
     </form>
   );
 }

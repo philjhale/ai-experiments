@@ -24,22 +24,33 @@ export function JobList() {
     return <p role="alert">{error}</p>;
   }
 
+  if (jobs.length === 0) {
+    return <p className="empty-state">No jobs posted yet.</p>;
+  }
+
   return (
-    <ul>
+    <ul className="job-list">
       {jobs.map((job) => (
-        <li key={job.id}>
-          <h3>{job.title}</h3>
-          <p>{job.company}</p>
-          <p>{job.location}</p>
-          <p>{job.employmentType}</p>
-          <p>{job.locationType}</p>
-          <p>{job.description}</p>
-          <a href={job.applicationUrl} className="apply-link">
-            Apply
-          </a>
-          <button type="button" className="delete-link" onClick={() => handleDelete(job.id)}>
-            Delete
-          </button>
+        <li key={job.id} className="job-card">
+          <div className="job-card__header">
+            <h3>{job.title}</h3>
+          </div>
+          <p className="job-card__meta">
+            {job.company} &middot; {job.location}
+          </p>
+          <div className="job-card__tags">
+            <span className="tag">{job.employmentType}</span>
+            <span className="tag">{job.locationType}</span>
+          </div>
+          <p className="job-card__description">{job.description}</p>
+          <div className="job-card__actions">
+            <a href={job.applicationUrl} className="apply-link">
+              Apply
+            </a>
+            <button type="button" className="delete-link" onClick={() => handleDelete(job.id)}>
+              Delete
+            </button>
+          </div>
         </li>
       ))}
     </ul>
