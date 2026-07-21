@@ -5,9 +5,9 @@
 - [x] 2. Prisma schema + initial migration (Job model)
 
 ## Phase 2 — Backend API
-- [ ] 3. GET /api/jobs (+ test)
-- [ ] 4. POST /api/jobs with Zod validation (+ tests: valid + invalid)
-- [ ] 5. DELETE /api/jobs/:id (+ tests: success + not-found)
+- [x] 3. GET /api/jobs (+ test)
+- [x] 4. POST /api/jobs with Zod validation (+ tests: valid + invalid)
+- [x] 5. DELETE /api/jobs/:id (+ tests: success + not-found)
 
 ## Phase 3 — Frontend
 - [ ] 6. API client (src/api/client.ts, src/types.ts) (+ test)
