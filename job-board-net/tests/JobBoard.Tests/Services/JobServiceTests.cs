@@ -70,4 +70,61 @@ public class JobServiceTests
 
         Assert.Equal(["Newer Job", "Older Job"], jobs.Select(j => j.Title));
     }
+
+    [Fact]
+    public async Task DeleteJobAsync_RemovesTheJob()
+    {
+        await using var context = CreateContext();
+        var service = new JobService(context);
+        var toDelete = new Job
+        {
+            Title = "Delete Me",
+            Company = "Acme",
+            Location = "Remote",
+            Description = "Should be removed",
+            EmploymentType = JobType.FullTime,
+            LocationType = RemoteType.Remote,
+            ApplicationUrl = "https://acme.example.com/careers/delete-me",
+        };
+        var toKeep = new Job
+        {
+            Title = "Keep Me",
+            Company = "Acme",
+            Location = "Remote",
+            Description = "Should remain",
+            EmploymentType = JobType.Contract,
+            LocationType = RemoteType.Onsite,
+            ApplicationUrl = "https://acme.example.com/careers/keep-me",
+        };
+        await service.AddJobAsync(toDelete);
+        await service.AddJobAsync(toKeep);
+
+        await service.DeleteJobAsync(toDelete.Id);
+
+        var jobs = await service.GetAllJobsAsync();
+        Assert.Equal(["Keep Me"], jobs.Select(j => j.Title));
+    }
+
+    [Fact]
+    public async Task DeleteJobAsync_NonExistentId_DoesNothing()
+    {
+        await using var context = CreateContext();
+        var service = new JobService(context);
+        var job = new Job
+        {
+            Title = "Existing Job",
+            Company = "Acme",
+            Location = "Remote",
+            Description = "Stays put",
+            EmploymentType = JobType.FullTime,
+            LocationType = RemoteType.Remote,
+            ApplicationUrl = "https://acme.example.com/careers/existing-job",
+        };
+        await service.AddJobAsync(job);
+
+        await service.DeleteJobAsync(9999);
+
+        var jobs = await service.GetAllJobsAsync();
+        Assert.Equal(["Existing Job"], jobs.Select(j => j.Title));
+    }
 }
