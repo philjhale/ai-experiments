@@ -59,7 +59,7 @@ All fields required except `PostedDate`, which is set automatically on creation.
 Note: the `Job.JobType` and `Job.Remote` properties were renamed to `EmploymentType` and `LocationType` for clarity. The enum *type* names (`JobType`, `RemoteType`) and their member values are unchanged — only the property names, DB columns, and UI labels changed. Requires a new EF Core migration (rename columns; do not edit `InitialCreate` in place).
 
 ## Pages
-- `/` — Job list. Displays all jobs, newest `PostedDate` first. Each entry shows Title, Company, Location, EmploymentType, LocationType, a truncated/full Description, an "Apply" link pointing at `ApplicationUrl`, and a "Delete" button that confirms before removing the job.
+- `/` — Job list. Displays all jobs, newest `PostedDate` first. Each entry shows Title, Company, Location, EmploymentType, LocationType, a truncated/full Description, an "Apply" button pointing at `ApplicationUrl`, and a de-emphasized "Delete" link that confirms before removing the job (so "Apply" stays the visually dominant action).
 - `/post` — Create job form. Fields for all Job properties except `Id` and `PostedDate`. Labels read "Employment Type", "Location Type", and "Application URL". `ApplicationUrl` is validated as a well-formed URL. On valid submit, saves via `JobService` and redirects to `/`.
 
 ## Code Style
@@ -180,14 +180,14 @@ Adds the ability to delete a job posting from the list page. Hard delete (row re
 
 **Scope:**
 - `JobService.cs`: new `Task DeleteJobAsync(int id)` method — finds the `Job` by id and removes it via `_context.Jobs.Remove(...)` + `SaveChangesAsync()`. No-op (or safely ignored) if the id no longer exists, to guard against double-clicks/race conditions.
-- `Home.razor`: each job entry gets a "Delete" button. Clicking it shows a confirmation prompt (via `IJSRuntime` `confirm()`) before calling `JobService.DeleteJobAsync` and refreshing the in-memory job list so the row disappears without a full page reload.
+- `Home.razor`: each job entry gets a "Delete" link, styled as a plain/muted link (not a `btn`) so the "Apply" button remains the visually dominant action. Clicking it shows a confirmation prompt (via `IJSRuntime` `confirm()`) before calling `JobService.DeleteJobAsync` and refreshing the in-memory job list so the row disappears without a full page reload.
 - `JobServiceTests.cs`: new tests covering `DeleteJobAsync` — deletes an existing job (list no longer contains it, other jobs unaffected), and calling it with a non-existent id does not throw.
 - No new EF Core migration required — deletion doesn't change the schema.
 
 **Acceptance:**
 - [ ] `dotnet build` succeeds.
 - [ ] `dotnet test` passes, including new `DeleteJobAsync` tests.
-- [ ] `/` shows a "Delete" button per job entry.
+- [ ] `/` shows a de-emphasized "Delete" link per job entry, with "Apply" remaining the visually dominant button.
 - [ ] Clicking "Delete" prompts for confirmation; confirming removes the job from the list and the database; cancelling leaves it untouched.
 - [ ] Deleting a job does not affect other jobs' ordering or data.
 
