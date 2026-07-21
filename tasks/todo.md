@@ -1,8 +1,8 @@
 # Todo: job-board-react rewrite
 
 ## Phase 1 — Scaffold
-- [ ] 1. Workspace scaffold (npm workspaces, Vite+React+TS frontend, Fastify+TS backend, .gitignore)
-- [ ] 2. Prisma schema + initial migration (Job model)
+- [x] 1. Workspace scaffold (npm workspaces, Vite+React+TS frontend, Fastify+TS backend, .gitignore)
+- [x] 2. Prisma schema + initial migration (Job model)
 
 ## Phase 2 — Backend API
 - [ ] 3. GET /api/jobs (+ test)
