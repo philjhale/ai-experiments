@@ -3,5 +3,5 @@
 - [x] spec
 - [x] plan
 - [x] build
-- [ ] review
+- [x] review
 - [ ] ship (+ PR)
