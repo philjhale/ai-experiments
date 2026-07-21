@@ -10,10 +10,10 @@
 - [x] 5. DELETE /api/jobs/:id (+ tests: success + not-found)
 
 ## Phase 3 — Frontend
-- [ ] 6. API client (src/api/client.ts, src/types.ts) (+ test)
-- [ ] 7. JobList page (+ test: order, delete confirm flow)
-- [ ] 8. PostJob page (+ test: validation, submit + redirect)
-- [ ] 9. Routing (react-router-dom, nav link) (+ test)
+- [x] 6. API client (src/api/client.ts, src/types.ts) (+ test)
+- [x] 7. JobList page (+ test: order, delete confirm flow)
+- [x] 8. PostJob page (+ test: validation, submit + redirect)
+- [x] 9. Routing (react-router-dom, nav link) (+ test)
 
 ## Phase 4 — Integration
 - [ ] 10. Manual golden-path verification against spec Success Criteria
