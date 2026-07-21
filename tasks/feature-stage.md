@@ -1,6 +1,6 @@
 # Feature stage tracker: job-board-react-rewrite
 
-- [ ] spec
+- [x] spec
 - [ ] plan
 - [ ] build
 - [ ] review
