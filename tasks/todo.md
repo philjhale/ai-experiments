@@ -16,4 +16,4 @@
 - [x] 9. Routing (react-router-dom, nav link) (+ test)
 
 ## Phase 4 — Integration
-- [ ] 10. Manual golden-path verification against spec Success Criteria
+- [x] 10. Manual golden-path verification against spec Success Criteria
