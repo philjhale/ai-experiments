@@ -1,5 +1,6 @@
 @page "/"
 @inject JobService JobService
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Job Board</PageTitle>
 
@@ -30,6 +31,7 @@ else
                 <p class="card-text">@job.Description</p>
                 <p class="card-text"><small class="text-muted">Posted @job.PostedDate.ToLocalTime().ToString("g")</small></p>
                 <a class="btn btn-outline-primary" href="@job.ApplicationUrl" rel="noopener noreferrer">Apply</a>
+                <a class="text-danger small ms-3" href="#" @onclick="() => DeleteJobAsync(job)" @onclick:preventDefault>Delete</a>
             </div>
         </div>
     }
@@ -41,5 +43,17 @@ else
     protected override async Task OnInitializedAsync()
     {
         jobs = await JobService.GetAllJobsAsync();
+    }
+
+    private async Task DeleteJobAsync(Job job)
+    {
+        var confirmed = await JSRuntime.InvokeAsync<bool>("confirm", $"Delete \"{job.Title}\"?");
+        if (!confirmed)
+        {
+            return;
+        }
+
+        await JobService.DeleteJobAsync(job.Id);
+        jobs?.Remove(job);
     }
 }
