@@ -19,8 +19,8 @@ const initialForm: CreateJobInput = {
 
 function isValidUrl(value: string) {
   try {
-    new URL(value);
-    return true;
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
   } catch {
     return false;
   }
@@ -46,6 +46,7 @@ export function PostJob() {
   const navigate = useNavigate();
   const [form, setForm] = useState<CreateJobInput>(initialForm);
   const [errors, setErrors] = useState<Partial<Record<keyof CreateJobInput, string>>>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   function updateField<K extends keyof CreateJobInput>(field: K, value: CreateJobInput[K]) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -59,12 +60,18 @@ export function PostJob() {
       return;
     }
 
-    await createJob(form);
-    navigate("/");
+    setSubmitError(null);
+    try {
+      await createJob(form);
+      navigate("/");
+    } catch {
+      setSubmitError("Failed to post job. Please try again.");
+    }
   }
 
   return (
     <form className="job-form" onSubmit={handleSubmit} noValidate>
+      {submitError && <p role="alert">{submitError}</p>}
       <div className="field">
         <label htmlFor="title">Title</label>
         <input

@@ -5,6 +5,7 @@ import type { Job } from "../types";
 export function JobList() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => {
     getJobs()
@@ -16,8 +17,13 @@ export function JobList() {
     if (!window.confirm("Delete this job posting?")) {
       return;
     }
-    await deleteJob(id);
-    setJobs((current) => current.filter((job) => job.id !== id));
+    setDeleteError(null);
+    try {
+      await deleteJob(id);
+      setJobs((current) => current.filter((job) => job.id !== id));
+    } catch {
+      setDeleteError("Failed to delete job. Please try again.");
+    }
   }
 
   if (error) {
@@ -29,30 +35,33 @@ export function JobList() {
   }
 
   return (
-    <ul className="job-list">
-      {jobs.map((job) => (
-        <li key={job.id} className="job-card">
-          <div className="job-card__header">
-            <h3>{job.title}</h3>
-          </div>
-          <p className="job-card__meta">
-            {job.company} &middot; {job.location}
-          </p>
-          <div className="job-card__tags">
-            <span className="tag">{job.employmentType}</span>
-            <span className="tag">{job.locationType}</span>
-          </div>
-          <p className="job-card__description">{job.description}</p>
-          <div className="job-card__actions">
-            <a href={job.applicationUrl} className="apply-link">
-              Apply
-            </a>
-            <button type="button" className="delete-link" onClick={() => handleDelete(job.id)}>
-              Delete
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
+    <>
+      {deleteError && <p role="alert">{deleteError}</p>}
+      <ul className="job-list">
+        {jobs.map((job) => (
+          <li key={job.id} className="job-card">
+            <div className="job-card__header">
+              <h3>{job.title}</h3>
+            </div>
+            <p className="job-card__meta">
+              {job.company} &middot; {job.location}
+            </p>
+            <div className="job-card__tags">
+              <span className="tag">{job.employmentType}</span>
+              <span className="tag">{job.locationType}</span>
+            </div>
+            <p className="job-card__description">{job.description}</p>
+            <div className="job-card__actions">
+              <a href={job.applicationUrl} className="apply-link" rel="noopener noreferrer">
+                Apply
+              </a>
+              <button type="button" className="delete-link" onClick={() => handleDelete(job.id)}>
+                Delete
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }

@@ -51,6 +51,37 @@ describe("PostJob", () => {
     expect(client.createJob).not.toHaveBeenCalled();
   });
 
+  it("rejects an applicationUrl with a disallowed scheme", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <PostJob />
+      </MemoryRouter>,
+    );
+
+    await user.type(screen.getByLabelText(/application url/i), "javascript:alert(1)");
+    await user.click(screen.getByRole("button", { name: /post job/i }));
+
+    expect(await screen.findByText(/valid url/i)).toBeInTheDocument();
+    expect(client.createJob).not.toHaveBeenCalled();
+  });
+
+  it("shows an error message and does not navigate if createJob fails", async () => {
+    (client.createJob as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Failed to create job (400)"));
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <PostJob />
+      </MemoryRouter>,
+    );
+
+    await fillValidForm(user);
+    await user.click(screen.getByRole("button", { name: /post job/i }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(/failed to post job/i);
+    expect(navigateMock).not.toHaveBeenCalled();
+  });
+
   it("submits valid data and redirects to /", async () => {
     const user = userEvent.setup();
     render(

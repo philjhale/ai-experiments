@@ -10,7 +10,19 @@ export const createJobSchema = z.object({
   description: z.string().min(1),
   employmentType: z.enum(employmentTypes),
   locationType: z.enum(locationTypes),
-  applicationUrl: z.string().url(),
+  applicationUrl: z
+    .string()
+    .url()
+    .refine(
+      (value) => {
+        try {
+          return ["http:", "https:"].includes(new URL(value).protocol);
+        } catch {
+          return false;
+        }
+      },
+      { message: "Application URL must use http or https" },
+    ),
 });
 
 export type CreateJobInput = z.infer<typeof createJobSchema>;

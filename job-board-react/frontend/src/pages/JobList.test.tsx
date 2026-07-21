@@ -79,4 +79,17 @@ describe("JobList", () => {
 
     expect(await screen.findByText(/failed to load jobs/i)).toBeInTheDocument();
   });
+
+  it("shows an error message and keeps the job if deleteJob fails", async () => {
+    (window.confirm as ReturnType<typeof vi.fn>).mockReturnValue(true);
+    (client.deleteJob as ReturnType<typeof vi.fn>).mockRejectedValue(new Error("Failed to delete job (500)"));
+    const user = userEvent.setup();
+    render(<JobList />);
+
+    const item = (await screen.findByText("Older Job")).closest("li")!;
+    await user.click(within(item).getByRole("button", { name: /delete/i }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(/failed to delete job/i);
+    expect(screen.getByText("Older Job")).toBeInTheDocument();
+  });
 });

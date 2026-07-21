@@ -13,8 +13,9 @@ A React + Node.js rewrite of the job board app in `job-board-net/` (.NET + Blazo
 ```bash
 npm install                            # installs both workspaces
 
-# copy the backend env template and apply the migration
+# copy the backend env templates and apply the migration
 cp backend/.env.example backend/.env
+cp backend/.env.test.example backend/.env.test   # required before `npm test`
 npm run --workspace backend prisma migrate deploy
 
 npm run dev --workspace backend        # http://localhost:3001
@@ -56,5 +57,5 @@ job-board-react/
 
 ## Notes
 
-- `jobboard.db` (dev) and `test.db` (backend tests) are gitignored SQLite files; backend tests run against `test.db` via `.env.test` so they never touch your dev data.
+- `jobboard.db` (dev) and `test.db` (backend tests) are gitignored SQLite files; backend tests run against `test.db` via `backend/.env.test` so they never touch your dev data. `npm test --workspace backend` refuses to run (rather than silently falling back to the dev DB) if `backend/.env.test` doesn't exist — copy it from `.env.test.example` first.
 - Out of scope for this MVP: authentication, editing jobs, search/filtering, pagination, email notifications.

@@ -71,4 +71,19 @@ describe("POST /api/jobs", () => {
 
     expect(response.statusCode).toBe(400);
   });
+
+  it.each(["javascript:alert(1)", "data:text/html,<script>alert(1)</script>"])(
+    "rejects an applicationUrl with a disallowed scheme (%s)",
+    async (applicationUrl) => {
+      const app = buildApp();
+
+      const response = await app.inject({
+        method: "POST",
+        url: "/api/jobs",
+        payload: { ...validPayload, applicationUrl },
+      });
+
+      expect(response.statusCode).toBe(400);
+    },
+  );
 });
